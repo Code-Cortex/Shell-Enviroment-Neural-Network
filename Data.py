@@ -26,7 +26,7 @@ nb_actions = 96
 model_num = 0
 
 # training adjustments
-total_models = 25
+total_models = 24
 starting_fitness = 0
 # maximum and minimum percentage mutated
 mutation_max = 85
