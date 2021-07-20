@@ -203,7 +203,7 @@ while True:
                 if not updated:
                     cross_over_weights[1] = best_weights
                 mutated1 = model_mutate(cross_over_weights[0])
-                mutated2 = model_mutate(cross_over_weights[0])
+                mutated2 = model_mutate(cross_over_weights[1])
 
                 new_weights.append(mutated1)
                 new_weights.append(mutated2)
