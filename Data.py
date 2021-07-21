@@ -192,9 +192,8 @@ while True:
                     updated = True
                     highest_fitness = fitness[select]
                     best_weights = current_pool[select].get_weights()
-            if mutation_rate < mutation_min:
-                if updated:
-                    mutation_rate = mutation_min
+            if updated:
+                mutation_rate = mutation_min
             if mutation_rate > mutation_max:
                 if not updated:
                     mutation_rate -= .01
