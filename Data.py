@@ -58,7 +58,7 @@ def term_interact():
         proc = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
         cmd = ''
         try:
-            stdout = proc.communicate(timeout=1)[0].decode()
+            stdout = proc.communicate(timeout=5)[0].decode()
             exitcode = proc.returncode
         except TimeoutExpired:
             proc.kill()
