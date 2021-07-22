@@ -34,6 +34,7 @@ mutation_min = 15
 
 # variable assignment
 new_weights = []
+alt_weights = []
 current_pool = []
 prev_weights = []
 fitness = []
@@ -127,15 +128,16 @@ def model_crossover():
 
 
 def cleanup():
-    global mutated1, mutated2, new_weights, parent1, parent2, cross_over_weights, prediction, action, enc_ascii
+    global mutated1, mutated2, new_weights,alt_weights, parent1, parent2, cross_over_weights, prediction, action, enc_ascii
     if 'mutated1' in globals():
         del mutated1
     if 'mutated2' in globals():
         del mutated2
     if 'cross_over_weights' in globals():
         del cross_over_weights
-    del new_weights, parent1, parent2, prediction, action, enc_ascii
+    del new_weights,alt_weights, parent1, parent2, prediction, action, enc_ascii
     new_weights = []
+    alt_weights = []
     clear_session()
     collect()
 
@@ -218,10 +220,10 @@ while True:
                     mutation_rate -= .01
                 for select in range(total_models):
                     prev_mutated = model_mutate(prev_weights[select])
-                    new_weights.append(prev_mutated)
-                for select in range(len(new_weights)):
+                    alt_weights.append(prev_mutated)
+                for select in range(len(alt_weights)):
                     fitness[select] = starting_fitness
-                    current_pool[select].set_weights(new_weights[select])
+                    current_pool[select].set_weights(alt_weights[select])
                 cleanup()
                 save_pool()
 
