@@ -128,14 +128,14 @@ def model_crossover():
 
 
 def cleanup():
-    global mutated1, mutated2, new_weights,alt_weights, parent1, parent2, cross_over_weights, prediction, action, enc_ascii
+    global mutated1, mutated2, new_weights, alt_weights, parent1, parent2, cross_over_weights, prediction, action, enc_ascii
     if 'mutated1' in globals():
         del mutated1
     if 'mutated2' in globals():
         del mutated2
     if 'cross_over_weights' in globals():
         del cross_over_weights
-    del new_weights,alt_weights, parent1, parent2, prediction, action, enc_ascii
+    del new_weights, alt_weights, parent1, parent2, prediction, action, enc_ascii
     new_weights = []
     alt_weights = []
     clear_session()
