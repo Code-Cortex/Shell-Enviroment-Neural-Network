@@ -228,7 +228,6 @@ while True:
                     fitness[select] = starting_fitness
                     current_pool[select].set_weights(alt_weights[select])
                 cleanup()
-                save_pool()
 
     except Exception as e:
         logfile = Path('error_log.txt')
