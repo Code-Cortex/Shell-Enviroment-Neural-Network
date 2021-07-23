@@ -18,6 +18,7 @@ length_penalty = .25
 learning_reward = 10
 variety_reward = 1
 max_cmd = 100
+blank_penalty = -((max_cmd * length_penalty) // 2)
 
 # model adjustments
 hidden_layers = 32
@@ -55,6 +56,8 @@ def term_interact():
     if cmd_in:
         term_out = ''
         prev_cmd = ''
+        if not cmd:
+            fitness[model_num] -= blank_penalty
         proc = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
         cmd = ''
         try:
