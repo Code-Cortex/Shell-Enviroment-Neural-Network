@@ -50,6 +50,7 @@ mutation_max = round(1 - (mutation_max / 100), 2)
 mutation_min = round(1 - (mutation_min / 100), 2)
 mutation_rate = mutation_min
 
+
 def term_interact():
     global term_out, cmd, prev_cmd
     if cmd_in:
