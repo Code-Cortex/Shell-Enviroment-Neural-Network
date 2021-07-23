@@ -18,7 +18,7 @@ length_penalty = .25
 learning_reward = 10
 variety_reward = 1
 max_cmd = 100
-blank_penalty = -((max_cmd * length_penalty) // 2)
+blank_penalty = -5
 
 # model adjustments
 hidden_layers = 32
