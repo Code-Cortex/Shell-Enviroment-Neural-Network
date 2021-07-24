@@ -109,7 +109,7 @@ def model_mutate(weights):
     for i in range(len(weights)):
         for j in range(len(weights[i])):
             if random.uniform(0, 1) > mutation_rate:
-                change = random.uniform(-.01, .01)
+                change = random.uniform(-.5, .5)
                 weights[i][j] += change
     return weights
 
