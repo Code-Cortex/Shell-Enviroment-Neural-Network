@@ -27,11 +27,12 @@ nb_actions = 96
 model_num = 0
 
 # training adjustments
-total_models = 24
+total_models = 50
 starting_fitness = 0
 # maximum and minimum percentage mutated
 mutation_max = 85
 mutation_min = 15
+mutation_value = nb_actions / 100
 
 # variable assignment
 new_weights = []
@@ -109,7 +110,7 @@ def model_mutate(weights):
     for i in range(len(weights)):
         for j in range(len(weights[i])):
             if random.uniform(0, 1) > mutation_rate:
-                change = random.uniform(-.5, .5)
+                change = random.uniform(-mutation_value, mutation_value)
                 weights[i][j] += change
     return weights
 
