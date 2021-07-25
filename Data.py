@@ -25,6 +25,10 @@ hidden_layers = 32
 layer_neurons = 128
 nb_actions = 96
 model_num = 0
+epsilon = 1
+epsilon_max = 1
+epsilon_min = 0.1
+epsilon_decay = 0.00001
 
 # training adjustments
 total_models = 50
@@ -32,7 +36,7 @@ starting_fitness = 0
 # maximum and minimum percentage mutated
 mutation_max = 85
 mutation_min = 15
-mutation_value = nb_actions / 100
+mutation_value = 0.5
 
 # variable assignment
 new_weights = []
@@ -170,7 +174,12 @@ while True:
             while model_num < total_models:
                 prediction = current_pool[model_num].predict(term_interact(), batch_size=1)
                 init = False
-                action = np.argmax(prediction)
+                if epsilon > epsilon_min:
+                    epsilon -= epsilon_decay
+                if np.random.random() > epsilon:
+                    action = np.argmax(prediction)
+                else:
+                    action = np.random.randint(0, nb_actions)
                 enc_ascii = action + 32
                 if len(cmd) < max_cmd:
                     if enc_ascii != 127:
