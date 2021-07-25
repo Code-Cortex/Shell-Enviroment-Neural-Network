@@ -15,28 +15,24 @@ tf.get_logger().setLevel('ERROR')
 # env adjustments
 cmd = 'echo Hello World!'
 length_penalty = .25
-blank_penalty = 5
 learning_reward = 10
 variety_reward = 1
 max_cmd = 100
+blank_penalty = max_cmd * length_penalty
 
 # model adjustments
 hidden_layers = 32
 layer_neurons = 128
 nb_actions = 96
 model_num = 0
-epsilon = 1
-epsilon_max = 1
-epsilon_min = 0.1
-epsilon_decay = 0.00001
 
 # training adjustments
 total_models = 50
 starting_fitness = 0
 # maximum and minimum percentage mutated
-mutation_max = 85
-mutation_min = 15
-mutation_value = 0.5
+mutation_max = 20
+mutation_min = 10
+mutation_value = .5
 
 # variable assignment
 new_weights = []
@@ -174,12 +170,7 @@ while True:
             while model_num < total_models:
                 prediction = current_pool[model_num].predict(term_interact(), batch_size=1)
                 init = False
-                if epsilon > epsilon_min:
-                    epsilon -= epsilon_decay
-                if np.random.random() > epsilon:
-                    action = np.argmax(prediction)
-                else:
-                    action = np.random.randint(0, nb_actions)
+                action = np.argmax(prediction)
                 enc_ascii = action + 32
                 if len(cmd) < max_cmd:
                     if enc_ascii != 127:
