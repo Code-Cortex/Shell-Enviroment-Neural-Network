@@ -245,7 +245,7 @@ while True:
                 aux_parent1 = random.randint(0, total_models - 1)
                 aux_parent2 = random.randint(0, total_models - 1)
                 if aux_parent1 == aux_parent2:
-                    if aux_parent2 + 1 < total_models - 1:
+                    if aux_parent2 + 1 < total_models:
                         aux_parent2 += 1
                     else:
                         aux_parent2 -= 1
