@@ -241,6 +241,8 @@ while True:
                 cleanup()
                 save_pool()
             else:
+                if mutation_rate > mutation_max:
+                    mutation_rate -= .01
                 for select in range(total_models // 2):
                     aux_crossover_weights = aux_crossover()
                     aux_mutated1 = model_mutate(aux_crossover_weights[0])
