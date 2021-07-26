@@ -226,6 +226,8 @@ while True:
                 prev_weights = []
                 for select in range(total_models):
                     prev_weights.append(current_pool[select].get_weights())
+                aux_parent1 = parent1
+                aux_parent2 = parent2
                 mutation_rate = mutation_min
                 for select in range(total_models // 2):
                     cross_over_weights = model_crossover()
@@ -239,17 +241,6 @@ while True:
                 cleanup()
                 save_pool()
             else:
-                if mutation_rate > mutation_max:
-                    mutation_rate -= .01
-
-                aux_parent1 = random.randint(0, total_models - 1)
-                aux_parent2 = random.randint(0, total_models - 1)
-                if aux_parent1 == aux_parent2:
-                    if aux_parent2 + 1 < total_models:
-                        aux_parent2 += 1
-                    else:
-                        aux_parent2 -= 1
-
                 for select in range(total_models // 2):
                     aux_crossover_weights = aux_crossover()
                     aux_mutated1 = model_mutate(aux_crossover_weights[0])
