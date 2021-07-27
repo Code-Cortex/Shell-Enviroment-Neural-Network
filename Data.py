@@ -36,13 +36,12 @@ mutation_value = .5
 
 # variable assignment
 new_weights = []
-aux_weights = []
 current_pool = []
-prev_weights = []
+best_weights = []
 fitness = []
+highest_fitness = -(max_cmd * length_penalty)
 init = True
 cmd_in = True
-highest_fitness = -(max_cmd * length_penalty)
 term_out = ''
 prev_cmd = ''
 error_count = 0
@@ -131,23 +130,8 @@ def model_crossover():
     return np.asarray([new_weight1, new_weight2])
 
 
-def aux_crossover():
-    aux_weight1 = prev_weights[aux_parent1]
-    aux_weight2 = prev_weights[aux_parent2]
-    aux_new1 = aux_weight1
-    aux_new2 = aux_weight2
-
-    for i in range(len(aux_weights)):
-        if random.uniform(0, 1) > .85:
-            gene = random.randint(0, len(aux_new1) - 1)
-            aux_new1[gene] = aux_weight2[gene]
-            aux_new2[gene] = aux_weight1[gene]
-    return np.asarray([aux_new1, aux_new2])
-
-
 def cleanup():
-    global mutated1, mutated2, aux_mutated1, aux_mutated2, new_weights, aux_weights, parent1, parent2
-    global cross_over_weights, prediction, action, enc_ascii, aux_crossover_weights
+    global mutated1, mutated2, new_weights, parent1, parent2, cross_over_weights, prediction, action, enc_ascii
     if 'mutated1' in globals():
         del mutated1
     if 'mutated2' in globals():
@@ -156,18 +140,11 @@ def cleanup():
         del parent1
     if 'parent2' in globals():
         del parent2
-    if 'aux_mutated1' in globals():
-        del aux_mutated1
-    if 'aux_mutated2' in globals():
-        del aux_mutated2
     if 'cross_over_weights' in globals():
         del cross_over_weights
-    if 'aux_crossover_weights' in globals():
-        del aux_crossover_weights
 
-    del new_weights, aux_weights, prediction, action, enc_ascii
+    del new_weights, prediction, action, enc_ascii
     new_weights = []
-    aux_weights = []
     clear_session()
     collect()
 
@@ -213,60 +190,41 @@ while True:
                     continue
             model_num = 0
 
+            parent1 = random.randint(0, total_models - 1)
+            parent2 = random.randint(0, total_models - 1)
+
+            for i in range(total_models):
+                if fitness[i] >= fitness[parent1]:
+                    parent1 = i
+
+            for j in range(total_models):
+                if j != parent1:
+                    if fitness[j] >= fitness[parent2]:
+                        parent2 = j
             updated = False
             for select in range(total_models):
                 if fitness[select] >= highest_fitness:
                     updated = True
                     highest_fitness = fitness[select]
+                    best_weights = current_pool[select].get_weights()
             if updated:
-                parent1 = random.randint(0, total_models - 1)
-                parent2 = random.randint(0, total_models - 1)
-
-                for i in range(total_models):
-                    if fitness[i] >= fitness[parent1]:
-                        parent1 = i
-
-                for j in range(total_models):
-                    if j != parent1:
-                        if fitness[j] >= fitness[parent2]:
-                            parent2 = j
-
-                prev_weights = []
-                for select in range(total_models):
-                    prev_weights.append(current_pool[select].get_weights())
-                aux_parent1 = parent1
-                aux_parent2 = random.randint(0, total_models - 1)
-                if aux_parent1 == aux_parent2:
-                    if aux_parent2 + 1 < total_models:
-                        aux_parent2 += 1
-                    else:
-                        aux_parent2 -= 1
-
                 mutation_rate = mutation_min
-                for select in range(total_models // 2):
-                    cross_over_weights = model_crossover()
-                    mutated1 = model_mutate(cross_over_weights[0])
-                    mutated2 = model_mutate(cross_over_weights[1])
-                    new_weights.append(mutated1)
-                    new_weights.append(mutated2)
-                for select in range(len(new_weights)):
-                    fitness[select] = starting_fitness
-                    current_pool[select].set_weights(new_weights[select])
-                cleanup()
-                save_pool()
             else:
                 if mutation_rate > mutation_max:
                     mutation_rate -= .01
-                for select in range(total_models // 2):
-                    aux_crossover_weights = aux_crossover()
-                    aux_mutated1 = model_mutate(aux_crossover_weights[0])
-                    aux_mutated2 = model_mutate(aux_crossover_weights[1])
-                    aux_weights.append(aux_mutated1)
-                    aux_weights.append(aux_mutated2)
-                for select in range(len(aux_weights)):
-                    fitness[select] = starting_fitness
-                    current_pool[select].set_weights(aux_weights[select])
-                cleanup()
+            for select in range(total_models // 2):
+                cross_over_weights = model_crossover()
+                if not updated:
+                    cross_over_weights[1] = best_weights
+                mutated1 = model_mutate(cross_over_weights[0])
+                mutated2 = model_mutate(cross_over_weights[1])
+                new_weights.append(mutated1)
+                new_weights.append(mutated2)
+            for select in range(len(new_weights)):
+                fitness[select] = starting_fitness
+                current_pool[select].set_weights(new_weights[select])
+            cleanup()
+            save_pool()
 
     except Exception as e:
         logfile = Path('error_log.txt')
