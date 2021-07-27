@@ -235,7 +235,12 @@ while True:
                 for select in range(total_models):
                     prev_weights.append(current_pool[select].get_weights())
                 aux_parent1 = parent1
-                aux_parent2 = parent2
+                aux_parent2 = random.randint(0, total_models - 1)
+                if aux_parent1 == aux_parent2:
+                    if aux_parent2 + 1 < total_models:
+                        aux_parent2 += 1
+                    else:
+                        aux_parent2 -= 1
 
                 mutation_rate = mutation_min
                 for select in range(total_models // 2):
