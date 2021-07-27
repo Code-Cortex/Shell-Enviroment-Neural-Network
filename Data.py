@@ -202,7 +202,7 @@ while True:
                         
             updated = False
             for select in range(total_models):
-                if fitness[select] >= highest_fitness:
+                if fitness[select] > highest_fitness:
                     updated = True
                     highest_fitness = fitness[select]
                     best_weights = current_pool[select].get_weights()
