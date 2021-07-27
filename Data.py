@@ -16,7 +16,7 @@ tf.get_logger().setLevel('ERROR')
 cmd = 'echo Hello World!'
 length_penalty = .25
 learning_reward = 1
-variety_reward = 1
+variety_reward = 5
 max_cmd = 100
 blank_penalty = max_cmd * length_penalty
 
@@ -32,7 +32,7 @@ starting_fitness = 0
 # maximum and minimum percentage mutated
 mutation_max = 20
 mutation_min = 10
-mutation_value = .5
+mutation_value = .01
 
 # variable assignment
 new_weights = []
@@ -199,7 +199,7 @@ while True:
                 if j != parent1:
                     if fitness[j] >= fitness[parent2]:
                         parent2 = j
-                        
+
             updated = False
             for select in range(total_models):
                 if fitness[select] > highest_fitness:
@@ -211,7 +211,7 @@ while True:
             else:
                 if mutation_rate > mutation_max:
                     mutation_rate -= .01
-                    
+
             for select in range(total_models // 2):
                 cross_over_weights = model_crossover()
                 if not updated:
@@ -220,7 +220,7 @@ while True:
                 mutated2 = model_mutate(cross_over_weights[1])
                 new_weights.append(mutated1)
                 new_weights.append(mutated2)
-                
+
             for select in range(len(new_weights)):
                 fitness[select] = starting_fitness
                 current_pool[select].set_weights(new_weights[select])
