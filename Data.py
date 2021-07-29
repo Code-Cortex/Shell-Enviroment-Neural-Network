@@ -15,8 +15,8 @@ tf.get_logger().setLevel('ERROR')
 # env adjustments
 cmd = 'echo Hello World!'
 length_penalty = .25
-learning_reward = 10
-variety_reward = 1
+learning_reward = 1
+variety_reward = 5
 max_cmd = 100
 blank_penalty = max_cmd * length_penalty
 
