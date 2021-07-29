@@ -212,11 +212,6 @@ while True:
                 updated = True
                 highest_fitness = avg_fitness
 
-            if highest_fitness < -5:
-                main_pool = []
-                init_pool()
-                continue
-
             parent1 = random.randint(0, total_models - 1)
             parent2 = random.randint(0, total_models - 1)
             for i in range(total_models):
@@ -257,7 +252,7 @@ while True:
                             fubar_parent1 = aux_parent1
                             fubar_parent2 = aux_parent2
                         cross_over_weights = model_crossover(fubar_pool, fubar_parent1, fubar_parent2)
-                        
+
                 mutated1 = model_mutate(cross_over_weights[0])
                 mutated2 = model_mutate(cross_over_weights[1])
                 new_weights.append(mutated1)
