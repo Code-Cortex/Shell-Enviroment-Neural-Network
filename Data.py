@@ -15,8 +15,8 @@ tf.get_logger().setLevel('ERROR')
 # env adjustments
 cmd = 'echo Hello World!'
 length_penalty = .25
-learning_reward = 1
-variety_reward = 5
+learning_reward = 10
+variety_reward = 1
 max_cmd = 100
 blank_penalty = max_cmd * length_penalty
 
@@ -30,18 +30,21 @@ model_num = 0
 total_models = 50
 starting_fitness = 0
 # maximum and minimum percentage mutated
-mutation_max = 50
+mutation_max = 20
 mutation_min = 10
-mutation_value = 0.1
+mutation_value = .5
 
 # variable assignment
 new_weights = []
+aux_weights = []
 current_pool = []
-best_weights = []
 fitness = []
-highest_fitness = -(max_cmd * length_penalty)
+aux_pool = []
+aux_parent1 = 0
+aux_parent2 = 0
 init = True
 cmd_in = True
+highest_fitness = -(max_cmd * length_penalty)
 term_out = ''
 prev_cmd = ''
 error_count = 0
@@ -114,17 +117,14 @@ def model_mutate(weights):
     return weights
 
 
-def model_crossover():
-    global current_pool, updated, best_weights
+def model_crossover(pool, parent_x1, parent_x2):
 
-    weight1 = current_pool[parent1].get_weights()
-    if updated:
-        weight2 = current_pool[parent2].get_weights()
-    else:
-        weight2 = best_weights
+    weight1 = pool[parent_x1].get_weights()
+    weight2 = pool[parent_x2].get_weights()
+
     new_weight1 = weight1
     new_weight2 = weight2
-    for i in range(len(new_weights)):
+    for i in range(len(new_weight1)):
         if random.uniform(0, 1) > .85:
             gene = random.randint(0, len(new_weight1) - 1)
             new_weight1[gene] = weight2[gene]
@@ -192,30 +192,37 @@ while True:
                     continue
             model_num = 0
 
+            updated = False
+            for select in range(total_models):
+                if fitness[select] >= highest_fitness:
+                    updated = True
+                    highest_fitness = fitness[select]
+
             parent1 = random.randint(0, total_models - 1)
             parent2 = random.randint(0, total_models - 1)
+
             for i in range(total_models):
                 if fitness[i] >= fitness[parent1]:
                     parent1 = i
+
             for j in range(total_models):
                 if j != parent1:
                     if fitness[j] >= fitness[parent2]:
                         parent2 = j
-
-            updated = False
-            for select in range(total_models):
-                if fitness[select] > highest_fitness:
-                    updated = True
-                    highest_fitness = fitness[select]
-                    best_weights = current_pool[select].get_weights()
             if updated:
+                aux_pool = current_pool
+                aux_parent1 = parent1
+                aux_parent2 = parent2
                 mutation_rate = mutation_min
             else:
                 if mutation_rate > mutation_max:
                     mutation_rate -= .01
-
+                    
             for select in range(total_models // 2):
-                cross_over_weights = model_crossover()
+                if updated:
+                    cross_over_weights = model_crossover(current_pool, parent1, parent2)
+                else:
+                    cross_over_weights = model_crossover(aux_pool, aux_parent1, aux_parent2)
                 mutated1 = model_mutate(cross_over_weights[0])
                 mutated2 = model_mutate(cross_over_weights[1])
                 new_weights.append(mutated1)
@@ -223,7 +230,6 @@ while True:
 
             for reset in range(total_models):
                 fitness[reset] = starting_fitness
-
             for select in range(len(new_weights)):
                 current_pool[select].set_weights(new_weights[select])
             cleanup()
