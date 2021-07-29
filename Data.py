@@ -29,7 +29,7 @@ model_num = 0
 # training adjustments
 total_models = 50
 starting_fitness = 0
-emergency_fallback = 5
+fubar_fallback = 5
 # maximum and minimum percentage mutated
 mutation_max = 50
 mutation_min = 10
@@ -237,7 +237,7 @@ while True:
                     no_update = 0
                 else:
                     no_update += 1
-                    if no_update <= emergency_fallback:
+                    if no_update <= fubar_fallback:
                         cross_over_weights = model_crossover(aux_pool, aux_parent1, aux_parent2)
                     else:
                         cross_over_weights = model_crossover(fubar_pool, fubar_parent1, fubar_parent2)
