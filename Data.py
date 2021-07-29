@@ -37,7 +37,7 @@ mutation_value = .01
 # variable assignment
 new_weights = []
 aux_weights = []
-current_pool = []
+main_pool = []
 fitness = []
 aux_pool = []
 aux_parent1 = 0
@@ -156,24 +156,24 @@ def save_pool():
         rmtree("SavedModels/")
     Path("SavedModels/").mkdir(parents=True, exist_ok=True)
     for xi in range(total_models):
-        save_model(current_pool[xi], "SavedModels/model_new" + str(xi) + ".keras")
+        save_model(main_pool[xi], "SavedModels/model_new" + str(xi) + ".keras")
 
 
 while True:
     try:
         if Path("SavedModels/").is_dir():
             for i in range(total_models):
-                current_pool.append(load_model("SavedModels/model_new" + str(i) + ".keras"))
+                main_pool.append(load_model("SavedModels/model_new" + str(i) + ".keras"))
                 fitness.append(starting_fitness)
         else:
             for i in range(total_models):
                 model = create_model()
                 fitness.append(starting_fitness)
-                current_pool.append(model)
+                main_pool.append(model)
 
         while True:
             while model_num < total_models:
-                prediction = current_pool[model_num].predict(term_interact(), batch_size=1)
+                prediction = main_pool[model_num].predict(term_interact(), batch_size=1)
                 init = False
                 action = np.argmax(prediction)
                 enc_ascii = action + 32
@@ -207,9 +207,9 @@ while True:
                 if j != parent1:
                     if fitness[j] >= fitness[parent2]:
                         parent2 = j
-            
+
             if updated:
-                aux_pool = current_pool
+                aux_pool = main_pool
                 aux_parent1 = parent1
                 aux_parent2 = parent2
                 mutation_rate = mutation_min
@@ -219,7 +219,7 @@ while True:
 
             for select in range(total_models // 2):
                 if updated:
-                    cross_over_weights = model_crossover(current_pool, parent1, parent2)
+                    cross_over_weights = model_crossover(main_pool, parent1, parent2)
                 else:
                     cross_over_weights = model_crossover(aux_pool, aux_parent1, aux_parent2)
                 mutated1 = model_mutate(cross_over_weights[0])
@@ -230,7 +230,7 @@ while True:
             for reset in range(total_models):
                 fitness[reset] = starting_fitness
             for select in range(len(new_weights)):
-                current_pool[select].set_weights(new_weights[select])
+                main_pool[select].set_weights(new_weights[select])
             cleanup()
             save_pool()
 
