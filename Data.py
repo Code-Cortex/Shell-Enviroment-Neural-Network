@@ -129,7 +129,6 @@ def inject_random():
     global main_pool
     for i in range(total_models):
         if random.uniform(0, 1) > .50:
-            del main_pool[i]
             rand = create_model()
             main_pool[i] = rand
 
