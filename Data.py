@@ -55,6 +55,7 @@ prev_cmd = ''
 error_count = 0
 update_count = 0
 no_update = 0
+total_fitness = 0
 global e
 mutation_max = round(1 - (mutation_max / 100), 2)
 mutation_min = round(1 - (mutation_min / 100), 2)
@@ -205,10 +206,13 @@ while True:
 
             updated = False
             for select in range(total_models):
-                if fitness[select] >= highest_fitness:
-                    updated = True
-                    highest_fitness = fitness[select]
-            if highest_fitness < 0:
+                total_fitness += fitness[select]
+            avg_fitness = total_fitness / total_models
+            if avg_fitness >= highest_fitness:
+                updated = True
+                highest_fitness = avg_fitness
+
+            if highest_fitness < -5:
                 main_pool = []
                 init_pool()
                 continue
