@@ -49,6 +49,7 @@ fubar_fallback = 2
 
 init = True
 cmd_in = True
+randomize = False
 highest_fitness = -(max_cmd * length_penalty)
 term_out = ''
 prev_cmd = ''
@@ -126,9 +127,11 @@ def model_mutate(weights):
 
 def inject_random():
     global main_pool
-    del main_pool[-1]
-    rand = create_model()
-    main_pool.append(rand)
+    for i in range(total_models):
+        if random.uniform(0, 1) > .50:
+            del main_pool[i]
+            rand = create_model()
+            main_pool[i] = rand
 
 
 def model_crossover(pool, parent_x1, parent_x2):
@@ -250,6 +253,7 @@ while True:
                             fubar_parent1 = aux_parent1
                             fubar_parent2 = aux_parent2
                         cross_over_weights = model_crossover(fubar_pool, fubar_parent1, fubar_parent2)
+                        randomize = True
                         no_update = 0
                 mutated1 = model_mutate(cross_over_weights[0])
                 mutated2 = model_mutate(cross_over_weights[1])
@@ -260,7 +264,8 @@ while True:
                 fitness[reset] = starting_fitness
             for select in range(len(new_weights)):
                 main_pool[select].set_weights(new_weights[select])
-            inject_random()
+            if randomize:
+                inject_random()
             cleanup()
             save_pool()
 
