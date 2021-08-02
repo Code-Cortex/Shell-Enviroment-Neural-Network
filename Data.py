@@ -202,7 +202,7 @@ while True:
                         continue
                 else:
                     cmd_in = True
-                    if fitness[model_num] == -(max_cmd * length_penalty):
+                    if fitness[model_num] != -(max_cmd * length_penalty):
                         model_num += 1
                     continue
             model_num = 0
