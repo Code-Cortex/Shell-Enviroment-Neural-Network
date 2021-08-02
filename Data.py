@@ -184,6 +184,8 @@ while True:
 
         while True:
             while model_num < total_models:
+                if fitness[model_num] == -(max_cmd * length_penalty):
+                    main_pool[model_num] = create_model()
                 prediction = main_pool[model_num].predict(term_interact(), batch_size=1)
                 init = False
                 action = np.argmax(prediction)
@@ -195,11 +197,13 @@ while True:
                         continue
                     else:
                         cmd_in = True
-                        model_num += 1
+                        if fitness[model_num] != -(max_cmd * length_penalty):
+                            model_num += 1
                         continue
                 else:
                     cmd_in = True
-                    model_num += 1
+                    if fitness[model_num] == -(max_cmd * length_penalty):
+                        model_num += 1
                     continue
             model_num = 0
 
