@@ -27,7 +27,7 @@ nb_actions = 96
 model_num = 0
 
 # training adjustments
-total_models = 50
+total_models = 24
 starting_fitness = 0
 # maximum and minimum percentage mutated
 mutation_max = 50
@@ -42,10 +42,6 @@ fitness = []
 aux_pool = []
 aux_parent1 = 0
 aux_parent2 = 0
-fubar_pool = []
-fubar_parent1 = 0
-fubar_parent2 = 0
-fubar_fallback = 10
 
 init = True
 cmd_in = True
@@ -53,8 +49,6 @@ highest_fitness = -(max_cmd * length_penalty)
 term_out = ''
 prev_cmd = ''
 error_count = 0
-update_count = 0
-no_update = 0
 global e
 mutation_max = round(1 - (mutation_max / 100), 2)
 mutation_min = round(1 - (mutation_min / 100), 2)
@@ -232,13 +226,6 @@ while True:
                 aux_parent1 = parent1
                 aux_parent2 = parent2
                 mutation_rate = mutation_min
-                update_count += 1
-                if update_count == 2:
-                    fubar_pool = main_pool
-                    fubar_parent1 = parent1
-                    fubar_parent2 = parent2
-                    update_count = 0
-
             else:
                 if mutation_rate > mutation_max:
                     mutation_rate -= .01
@@ -246,18 +233,8 @@ while True:
             for select in range(total_models // 2):
                 if updated:
                     cross_over_weights = model_crossover(main_pool, parent1, parent2)
-                    no_update = 0
                 else:
-                    no_update += 1
-                    if no_update <= fubar_fallback:
-                        cross_over_weights = model_crossover(aux_pool, aux_parent1, aux_parent2)
-                    else:
-                        if not fubar_pool:
-                            fubar_pool = aux_pool
-                            fubar_parent1 = aux_parent1
-                            fubar_parent2 = aux_parent2
-                        cross_over_weights = model_crossover(fubar_pool, fubar_parent1, fubar_parent2)
-
+                    cross_over_weights = model_crossover(aux_pool, aux_parent1, aux_parent2)
                 mutated1 = model_mutate(cross_over_weights[0])
                 mutated2 = model_mutate(cross_over_weights[1])
                 new_weights.append(mutated1)
