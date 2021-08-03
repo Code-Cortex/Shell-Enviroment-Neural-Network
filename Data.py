@@ -24,7 +24,6 @@ blank_penalty = max_cmd * length_penalty
 hidden_layers = 32
 layer_neurons = 128
 nb_actions = 96
-model_num = 0
 
 # training adjustments
 total_models = 24
@@ -32,7 +31,6 @@ starting_fitness = 0
 # maximum and minimum percentage mutated
 mutation_max = 50
 mutation_min = 25
-mutation_value = nb_actions / 100
 
 # variable assignment
 new_weights = []
@@ -40,19 +38,26 @@ aux_weights = []
 main_pool = []
 fitness = []
 aux_pool = []
+
 aux_parent1 = 0
 aux_parent2 = 0
-
-init = True
-cmd_in = True
-highest_fitness = -(max_cmd * length_penalty)
-term_out = ''
-prev_cmd = ''
+model_num = 0
 error_count = 0
-global e
+
+mutation_value = nb_actions / 100
+highest_fitness = -(max_cmd * length_penalty)
 mutation_max = round(1 - (mutation_max / 100), 2)
 mutation_min = round(1 - (mutation_min / 100), 2)
 mutation_rate = mutation_min
+
+init = True
+cmd_in = True
+
+term_out = ''
+prev_cmd = ''
+
+global e
+
 
 
 def term_interact():
