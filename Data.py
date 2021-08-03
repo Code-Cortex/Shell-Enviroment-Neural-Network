@@ -38,24 +38,19 @@ aux_weights = []
 main_pool = []
 fitness = []
 aux_pool = []
-
 aux_parent1 = 0
 aux_parent2 = 0
 model_num = 0
 error_count = 0
-
+mutation_rate = mutation_min
 mutation_value = nb_actions / 100
 highest_fitness = -(max_cmd * length_penalty)
 mutation_max = round(1 - (mutation_max / 100), 2)
 mutation_min = round(1 - (mutation_min / 100), 2)
-mutation_rate = mutation_min
-
 init = True
 cmd_in = True
-
 term_out = ''
 prev_cmd = ''
-
 global e
 
 
