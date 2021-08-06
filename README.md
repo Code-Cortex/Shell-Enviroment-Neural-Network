@@ -1,4 +1,4 @@
-Data is a GA optomized net that interacts with either the windows or linux command lines.
+Data is a DQN that interacts with either the windows or linux command lines.
 Disclaimers:
 1. This is incomplete
 2. The Neural Network's limits are set by user permissions(if you run this as root, it has the ability to delete every file on your computer)
