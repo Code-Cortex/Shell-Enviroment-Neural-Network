@@ -188,6 +188,8 @@ while True:
     if done:
         save += 1
     if save > SAVE_INTERVAL:
+        if Path('Model').is_file():
+            Path('Model').unlink()
         save_model(agent.model, 'Model.keras')
         save = 0
 
