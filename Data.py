@@ -1,5 +1,5 @@
 from keras.models import Sequential, load_model, save_model
-from keras.layers import Dense, GRU, Dropout
+from keras.layers import Dense, GRU
 from keras.optimizers import Adam
 from collections import deque
 import random
@@ -121,10 +121,9 @@ class DQNAgent:
 
     def create_model(self):
         model = Sequential()
-        model.add(GRU(LAYER_NEURONS, name='INPUT', input_shape=env.observation.shape, return_sequences=True))
+        model.add(GRU(env.array_len, name='INPUT', input_shape=env.observation.shape, return_sequences=True))
         for layer in range(HIDDEN_LAYERS):
             model.add(GRU(LAYER_NEURONS, name='GRU' + str(layer), return_sequences=True))
-            model.add(Dropout(.25, name='Dropout' + str(layer)))
         model.add(GRU(LAYER_NEURONS, name='GRU' + str(HIDDEN_LAYERS)))
         model.add(Dense(NB_ACTIONS, name='output', activation='softmax'))
         model.compile(loss='mse', optimizer=Adam(learning_rate=0.001), metrics=['accuracy'])
