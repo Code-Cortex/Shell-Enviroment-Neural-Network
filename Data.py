@@ -1,5 +1,5 @@
 from keras.models import Sequential, load_model, save_model
-from keras.layers import Dense, Conv1D, Activation, Dropout, MaxPooling1D, Flatten
+from keras.layers import Dense, Conv1D, Activation, Dropout, MaxPooling1D
 from keras.optimizers import Adam
 from collections import deque
 import random
@@ -118,17 +118,15 @@ class DQNAgent:
 
     def create_model(self):
         model = Sequential()
-        model.add(Conv1D(256, 5, input_shape=env.observation.shape))
+        model.add(Conv1D(256, 3, input_shape=env.observation.shape))
         model.add(Activation("relu"))
-        model.add(MaxPooling1D(3))
+        model.add(MaxPooling1D(2))
         model.add(Dropout(0.2))
 
-        model.add(Conv1D(256, 5))
+        model.add(Conv1D(256, 3))
         model.add(Activation("relu"))
-        model.add(MaxPooling1D(3))
+        model.add(MaxPooling1D(2))
         model.add(Dropout(0.2))
-
-        model.add(Flatten())
         model.add(Dense(64))
 
         model.add(Dense(NB_ACTIONS, activation="linear"))
