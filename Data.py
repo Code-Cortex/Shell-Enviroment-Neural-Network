@@ -1,5 +1,5 @@
 from keras.models import Sequential, load_model, save_model
-from keras.layers import Dense, GRU
+from keras.layers import Dense, Conv1D, Activation, Dropout, MaxPooling1D, Flatten
 from keras.optimizers import Adam
 from collections import deque
 import random
@@ -21,8 +21,6 @@ EPSILON_DECAY = 0.99975
 MIN_EPSILON = 0
 
 # Model settings
-HIDDEN_LAYERS = 32
-LAYER_NEURONS = 128
 NB_ACTIONS = 96
 SAVE_INTERVAL = 5
 
@@ -91,8 +89,7 @@ class TermENV:
         return self.observation, self.reward, self.cmd_in
 
     def reset(self):
-        idxs = np.swapaxes(
-            (np.atleast_2d((np.frombuffer((str(Path.cwd()) + '> ').encode(), dtype=np.uint8) - 31) / 100)), 0, 1)
+        idxs = np.swapaxes((np.atleast_2d((np.frombuffer((str(Path.cwd()) + '> ').encode(), dtype=np.uint8) - 31) / 100)), 0, 1)
         if idxs.shape[0] < self.array_len:
             self.observation = np.append(idxs, np.zeros(((self.array_len - idxs.shape[0]), 1)), axis=0)
         else:
@@ -121,12 +118,21 @@ class DQNAgent:
 
     def create_model(self):
         model = Sequential()
-        model.add(GRU(LAYER_NEURONS, name='INPUT', input_shape=env.observation.shape, return_sequences=True))
-        for layer in range(HIDDEN_LAYERS):
-            model.add(GRU(LAYER_NEURONS, name='GRU' + str(layer), return_sequences=True))
-        model.add(GRU(LAYER_NEURONS, name='GRU' + str(HIDDEN_LAYERS)))
-        model.add(Dense(NB_ACTIONS, name='output', activation='softmax'))
-        model.compile(loss='mse', optimizer=Adam(learning_rate=0.001), metrics=['accuracy'])
+        model.add(Conv1D(256, 5, input_shape=env.observation.shape))
+        model.add(Activation("relu"))
+        model.add(MaxPooling1D(3))
+        model.add(Dropout(0.2))
+
+        model.add(Conv1D(256, 5))
+        model.add(Activation("relu"))
+        model.add(MaxPooling1D(3))
+        model.add(Dropout(0.2))
+
+        model.add(Flatten())
+        model.add(Dense(64))
+
+        model.add(Dense(NB_ACTIONS, activation="linear"))
+        model.compile(loss="mse", optimizer=Adam(lr=0.001), metrics=['accuracy'])
         return model
 
     def update_replay_memory(self, transition):
