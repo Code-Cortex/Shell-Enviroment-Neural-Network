@@ -16,8 +16,10 @@ UPDATE_TARGET_EVERY = 5  # Update Target model after x steps
 MEMORY_FRACTION = 0.20
 
 # Exploration settings
-epsilon = 1
+MAX_EPSILON = 1
+epsilon = MAX_EPSILON
 EPSILON_DECAY = 0.99975
+EPSILON_REGEN = 1.00025
 MIN_EPSILON = 0.001
 
 # Model settings
@@ -49,6 +51,8 @@ class TermENV:
         else:
             self.cmd_in = True
         if self.cmd_in:
+            self.prev_reward = self.reward
+            self.reward = 0
             if not self.cmd:
                 self.reward -= self.blank_penalty
             proc = Popen(self.cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
@@ -86,7 +90,7 @@ class TermENV:
             self.observation = np.append(idxs, np.zeros(((self.array_len - idxs.shape[0]), 1)), axis=0)
         else:
             self.observation = np.resize(idxs, (1, self.array_len))
-        return self.observation, self.reward, self.cmd_in
+        return self.observation, self.reward, self.prev_reward, self.cmd_in
 
     def reset(self):
         idxs = np.swapaxes((np.atleast_2d((np.frombuffer((str(Path.cwd()) + '> ').encode(), dtype=np.uint8) - 31) / 100)), 0, 1)
@@ -185,7 +189,7 @@ while True:
     else:
         # Get random action
         action = np.random.randint(0, env.NB_ACTIONS)
-    new_state, reward, done = env.step(action)
+    new_state, reward, prev_reward, done = env.step(action)
 
     agent.update_replay_memory((current_state, action, reward, new_state))
     agent.train(done)
@@ -198,7 +202,11 @@ while True:
         Path('SavedModel/').mkdir(parents=True, exist_ok=True)
         save_model(agent.model, 'SavedModel/Model.keras')
         save = 0
-
-    if epsilon > MIN_EPSILON:
-        epsilon *= EPSILON_DECAY
-        epsilon = max(MIN_EPSILON, epsilon)
+    if reward >= prev_reward:
+        if epsilon > MIN_EPSILON:
+            epsilon *= EPSILON_DECAY
+            epsilon = max(MIN_EPSILON, epsilon)
+    else:
+        if epsilon < MAX_EPSILON:
+            epsilon *= EPSILON_REGEN
+            epsilon = min(MAX_EPSILON, epsilon)
