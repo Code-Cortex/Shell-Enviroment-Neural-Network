@@ -197,7 +197,7 @@ while True:
             rmtree('SavedModel/')
         Path('SavedModel/').mkdir(parents=True, exist_ok=True)
         save_model(agent.model, 'SavedModel/Model.keras')
-    save = 0
+        save = 0
 
     if epsilon > MIN_EPSILON:
         epsilon *= EPSILON_DECAY
