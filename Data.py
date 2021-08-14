@@ -32,7 +32,7 @@ class TermENV:
     def __init__(self):
         self.range = .48
         self.NB_ACTIONS = 96
-        self.array_len = 10000
+        self.array_len = 1000
         self.length_penalty = .5
         self.learning_reward = 1
         self.variety_reward = 1
@@ -192,7 +192,7 @@ while True:
         action = np.random.randint(0, env.NB_ACTIONS)
     new_state, reward, prev_reward, done = env.step(action)
 
-    agent.update_replay_memory((current_state, action, reward, new_state))
+    agent.update_replay_memory((current_state, action, reward, new_state, done))
     agent.train(done)
     current_state = new_state
     if done:
