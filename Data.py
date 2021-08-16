@@ -33,18 +33,14 @@ class TermENV:
         self.length_penalty = .5
         self.learning_reward = 1
         self.variety_reward = 1
-        self.max_cmd = 100
-        self.blank_penalty = self.max_cmd * self.length_penalty
+        self.blank_penalty = 10
         self.reset()
 
     def step(self, action):
         enc_ascii = action + 32
-        if len(self.cmd) < self.max_cmd:
-            if enc_ascii != 127:
-                self.cmd += chr(enc_ascii)
-                self.cmd_in = False
-            else:
-                self.cmd_in = True
+        if enc_ascii != 127:
+            self.cmd += chr(enc_ascii)
+            self.cmd_in = False
         else:
             self.cmd_in = True
         if self.cmd_in:
