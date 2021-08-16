@@ -33,7 +33,7 @@ class TermENV:
         self.length_penalty = .5
         self.learning_reward = 1
         self.variety_reward = 1
-        self.blank_penalty = 10
+        self.blank_penalty = 50
         self.reset()
 
     def step(self, action):
