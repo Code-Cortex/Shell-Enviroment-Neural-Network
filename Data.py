@@ -170,7 +170,7 @@ class DQNAgent:
 
 
 agent = DQNAgent()
-if Path("SavedModels/").is_dir():
+if Path("SavedModel/").is_dir():
     agent.model = load_model('SavedModel/Model.keras')
 current_state = env.reset()
 save = 0
