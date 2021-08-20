@@ -31,9 +31,8 @@ class TermENV:
         self.NB_ACTIONS = 96
         self.array_len = 1000
         self.length_penalty = .5
-        self.learning_reward = 1
+        self.learning_reward = 5
         self.variety_reward = 1
-        self.blank_penalty = 50
         self.reset()
 
     def step(self, action):
@@ -44,8 +43,6 @@ class TermENV:
         else:
             self.cmd_in = True
         if self.cmd_in:
-            if not self.cmd:
-                self.reward -= self.blank_penalty
             proc = Popen(self.cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
             self.cmd = ''
             try:
@@ -127,7 +124,7 @@ class DQNAgent:
         model.add(Dense(64))
 
         model.add(Dense(NB_ACTIONS, activation="linear"))
-        model.compile(loss="mse", optimizer=Adam(lr=0.001), metrics=['accuracy'])
+        model.compile(loss="mse", optimizer=Adam(learning_rate=0.001), metrics=['accuracy'])
         return model
 
     def update_replay_memory(self, transition):
