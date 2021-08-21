@@ -30,7 +30,7 @@ class TermENV:
         self.range = .48
         self.NB_ACTIONS = 96
         self.array_len = 1000
-        self.length_penalty = .5
+        self.char_penalty = .25
         self.learning_reward = 5
         self.variety_reward = 1
         self.reset()
@@ -72,7 +72,7 @@ class TermENV:
                 if self.cmd[-1] not in self.prev_cmd:
                     self.reward += self.variety_reward
             self.prev_cmd = self.cmd
-            self.reward -= self.length_penalty
+            self.reward -= self.char_penalty
         idxs = np.swapaxes((np.atleast_2d((np.frombuffer(input_data.encode(), dtype=np.uint8) - 31) / 100)), 0, 1)
         if idxs.shape[0] < self.array_len:
             self.observation = np.append(idxs, np.zeros(((self.array_len - idxs.shape[0]), 1)), axis=0)
@@ -183,7 +183,6 @@ while True:
     agent.train(done)
     current_state = new_state
     if done:
-        env.reward = 0
         save += 1
     if save > SAVE_INTERVAL:
         if Path('SavedModel/').is_dir():
