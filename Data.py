@@ -44,7 +44,7 @@ class TermENV:
             self.cmd_in = True
         if self.cmd_in:
             if self.cmd:
-                if len(self.cmd) < 10:
+                if len(self.cmd) < 50:
                     self.reward += self.brief_reward
             proc = Popen(self.cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
             self.cmd = ''
