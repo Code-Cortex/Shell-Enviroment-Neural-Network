@@ -112,20 +112,20 @@ class DQNAgent:
 
     def create_model(self):
         model = Sequential()
-        model.add(Conv1D(256, 3, input_shape=env.observation.shape))
+        model.add(Conv1D(1000, 3, input_shape=env.observation.shape))
         model.add(Activation("relu"))
         model.add(MaxPooling1D(2))
         model.add(Dropout(0.2))
 
-        model.add(Conv1D(256, 3))
+        model.add(Conv1D(1000, 3))
         model.add(Activation("relu"))
         model.add(MaxPooling1D(2))
         model.add(Dropout(0.2))
 
         model.add(Flatten())
         model.add(Dense(64))
-
         model.add(Dense(NB_ACTIONS, activation="linear"))
+        
         model.compile(loss="mse", optimizer=Adam(learning_rate=0.001), metrics=['accuracy'])
         return model
 
